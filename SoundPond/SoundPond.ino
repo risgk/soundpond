@@ -1,5 +1,5 @@
 #define SERIAL_SPEED      (31250)
-#define SERIAL_SPEED      (38400)
+//#define SERIAL_SPEED      (38400)
 
 #define NOTE_ON_VELOCITY  (100)
 #define DEFAULT_CH        (0)   // default MIDI channel
