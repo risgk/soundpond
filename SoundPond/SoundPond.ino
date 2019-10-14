@@ -1,17 +1,16 @@
-#define SERIAL_SPEED      (31250)
-//#define SERIAL_SPEED      (38400)
+#define SERIAL_SPEED        (31250)
+//#define SERIAL_SPEED        (38400)
 
 #define NOTE_ON_VELOCITY    (100)
 #define DEFAULT_CH          (0)     // default MIDI channel
-#define ANTICHATTERING_WAIT (50)    // milliseconds
+#define ANTICHATTERING_WAIT (100)   // milliseconds
 #define ACTIVE              (HIGH)
 
 
 
 #define INACTIVE            ((ACTIVE == HIGH) ? LOW : HIGH)
-#define INVALID (0xFF)
-#define LED_PIN (13)
-#define NUM_PIN (54 + 16) // digital pins + analog pins
+#define INVALID             (0xFF)
+#define NUM_PIN             (54 + 16) // digital pins + analog pins
 
 typedef struct {
   byte          value;            // HIGH or LOW
@@ -93,17 +92,12 @@ SENSOR_STATE s_sensorStates[NUM_PIN] = {
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 69 (A15)
 };
 
-byte s_ledValue = HIGH;
-
 void setup() {
   for (byte i = 0; i < NUM_PIN; i++) {
     if (s_sensorStates[i].noteNumber != INVALID) {
       pinMode(i, INPUT);
     }
   }
-  
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, s_ledValue);
   
   Serial.begin(SERIAL_SPEED);
 }
@@ -128,8 +122,6 @@ void loop() {
       }
     }
   }
-
-  flipLED();
 }
 
 void sendMIDINoteOn(byte midiCh, byte noteNumber) {
@@ -144,15 +136,4 @@ void sendMIDINoteOff(byte midiCh, byte noteNumber) {
   Serial.write(noteNumber);
   Serial.write(0);
   Serial.flush();
-}
-
-void flipLED() {
-  if (s_ledValue == HIGH) {
-    s_ledValue = LOW;
-  } else {
-    s_ledValue = HIGH;
-  }
-
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, s_ledValue);
 }
