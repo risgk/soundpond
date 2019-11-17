@@ -1,16 +1,21 @@
 #define SERIAL_SPEED        (31250)
 //#define SERIAL_SPEED        (38400)
+//#define USE_DISTANCE_SENSOR
 
 #define NOTE_ON_VELOCITY    (100)
 #define DEFAULT_CH          (0)     // default MIDI channel
 #define ANTICHATTERING_WAIT (100)   // milliseconds
 #define ACTIVE              (LOW)
+#define DISTANCE_SENS_WAIT  (60)    // milliseconds
 
 
 
 #define INACTIVE            ((ACTIVE == HIGH) ? LOW : HIGH)
 #define INVALID             (0xFF)
 #define NUM_PIN             (54 + 16) // digital pins + analog pins
+#define LED_PIN             (13)
+#define D_SENSOR_TRIG_PIN   (52)
+#define D_SENSOR_ECHO_PIN   (53)
 
 typedef struct {
   byte          value;            // HIGH or LOW
@@ -73,8 +78,8 @@ SENSOR_STATE s_sensorStates[NUM_PIN] = {
   { INACTIVE, 0, DEFAULT_CH, 82      },  // Pin 49
   { INACTIVE, 0, DEFAULT_CH, 83      },  // Pin 50
   { INACTIVE, 0, DEFAULT_CH, 84      },  // Pin 51
-  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 52
-  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 53
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 52 (Distance Sensor Trig, reserved)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 53 (Distance Sensor Echo, reserved)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 54 (A0)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 55 (A1)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 56 (A2)
@@ -144,8 +149,8 @@ SENSOR_STATE s_sensorStates[NUM_PIN] = {
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 49
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 50
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 51
-  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 52
-  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 53
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 52 (Distance Sensor Trig, reserved)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 53 (Distance Sensor Echo, reserved)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 54 (A0)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 55 (A1)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 56 (A2)
@@ -165,14 +170,29 @@ SENSOR_STATE s_sensorStates[NUM_PIN] = {
 #endif
 };
 
+unsigned long s_distanceSensedTime = 0; // milliseconds
+byte s_ccMidiCh = 0;
+byte s_ccValue = 0;
+
 void setup() {
   for (byte i = 0; i < NUM_PIN; i++) {
     if (s_sensorStates[i].noteNumber != INVALID) {
       pinMode(i, INPUT);
     }
   }
-  
+
   Serial.begin(SERIAL_SPEED);
+
+#ifdef USE_DISTANCE_SENSOR
+  {
+    pinMode(D_SENSOR_TRIG_PIN, OUTPUT);
+    digitalWrite(D_SENSOR_TRIG_PIN, LOW);
+    
+    pinMode(D_SENSOR_ECHO_PIN, INPUT);
+    
+    sendMIDIConstolChange(s_ccMidiCh, s_ccValue);
+  }
+#endif
 }
 
 void loop() {
@@ -195,6 +215,35 @@ void loop() {
       }
     }
   }
+
+#ifdef USE_DISTANCE_SENSOR
+  {
+    if (millis() - s_distanceSensedTime >= DISTANCE_SENS_WAIT) {
+      digitalWrite(D_SENSOR_TRIG_PIN, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(D_SENSOR_TRIG_PIN, LOW);
+      unsigned long pulseCount = pulseIn(D_SENSOR_ECHO_PIN, HIGH, 5 * 1000);
+      //Serial.println(pulseCount);
+      s_distanceSensedTime = millis();
+      
+      byte newValue = 0;
+      byte denominator = 16;
+      unsigned int shortLength = 320;
+      if (pulseCount == 0) {
+        newValue = 0;
+      } else if (pulseCount <= shortLength) {
+        newValue = 127;
+      } else if (pulseCount <= shortLength + (127 * denominator)) {
+        newValue = ((shortLength + (127 * denominator)) - pulseCount) / denominator;
+      }
+      
+      if (s_ccValue != newValue) {
+        s_ccValue = newValue;
+        sendMIDIConstolChange(s_ccMidiCh, s_ccValue);
+      }
+    }
+  }
+#endif
 }
 
 void sendMIDINoteOn(byte midiCh, byte noteNumber) {
@@ -208,5 +257,12 @@ void sendMIDINoteOff(byte midiCh, byte noteNumber) {
   Serial.write(0x80 | midiCh);
   Serial.write(noteNumber);
   Serial.write(0);
+  Serial.flush();
+}
+
+void sendMIDIConstolChange(byte midiCh, byte value) {
+  Serial.write(0xB0 | midiCh);
+  Serial.write(1 /* Modulation */);
+  Serial.write(value);
   Serial.flush();
 }
