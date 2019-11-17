@@ -4,7 +4,7 @@
 #define NOTE_ON_VELOCITY    (100)
 #define DEFAULT_CH          (0)     // default MIDI channel
 #define ANTICHATTERING_WAIT (100)   // milliseconds
-#define ACTIVE              (HIGH)
+#define ACTIVE              (LOW)
 
 
 
@@ -20,9 +20,81 @@ typedef struct {
 } SENSOR_STATE;
 
 SENSOR_STATE s_sensorStates[NUM_PIN] = {
+#if 1
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 0 (RX0, reserved)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 1 (TX0, reserved)
-  { INACTIVE, 0, DEFAULT_CH, 60      },  // Pin 2
+  { INACTIVE, 0, DEFAULT_CH, 36      },  // Pin 2
+  { INACTIVE, 0, DEFAULT_CH, 37      },  // Pin 3
+  { INACTIVE, 0, DEFAULT_CH, 38      },  // Pin 4
+  { INACTIVE, 0, DEFAULT_CH, 39      },  // Pin 5
+  { INACTIVE, 0, DEFAULT_CH, 40      },  // Pin 6
+  { INACTIVE, 0, DEFAULT_CH, 41      },  // Pin 7
+  { INACTIVE, 0, DEFAULT_CH, 42      },  // Pin 8
+  { INACTIVE, 0, DEFAULT_CH, 43      },  // Pin 9
+  { INACTIVE, 0, DEFAULT_CH, 44      },  // Pin 10
+  { INACTIVE, 0, DEFAULT_CH, 45      },  // Pin 11
+  { INACTIVE, 0, DEFAULT_CH, 46      },  // Pin 12
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 13 (LED, reserved)
+  { INACTIVE, 0, DEFAULT_CH, 47      },  // Pin 14
+  { INACTIVE, 0, DEFAULT_CH, 48      },  // Pin 15
+  { INACTIVE, 0, DEFAULT_CH, 49      },  // Pin 16
+  { INACTIVE, 0, DEFAULT_CH, 50      },  // Pin 17
+  { INACTIVE, 0, DEFAULT_CH, 51      },  // Pin 18
+  { INACTIVE, 0, DEFAULT_CH, 52      },  // Pin 19
+  { INACTIVE, 0, DEFAULT_CH, 53      },  // Pin 20
+  { INACTIVE, 0, DEFAULT_CH, 54      },  // Pin 21
+  { INACTIVE, 0, DEFAULT_CH, 55      },  // Pin 22
+  { INACTIVE, 0, DEFAULT_CH, 56      },  // Pin 23
+  { INACTIVE, 0, DEFAULT_CH, 57      },  // Pin 24
+  { INACTIVE, 0, DEFAULT_CH, 58      },  // Pin 25
+  { INACTIVE, 0, DEFAULT_CH, 59      },  // Pin 26
+  { INACTIVE, 0, DEFAULT_CH, 60      },  // Pin 27
+  { INACTIVE, 0, DEFAULT_CH, 61      },  // Pin 28
+  { INACTIVE, 0, DEFAULT_CH, 62      },  // Pin 29
+  { INACTIVE, 0, DEFAULT_CH, 63      },  // Pin 30
+  { INACTIVE, 0, DEFAULT_CH, 64      },  // Pin 31
+  { INACTIVE, 0, DEFAULT_CH, 65      },  // Pin 32
+  { INACTIVE, 0, DEFAULT_CH, 66      },  // Pin 33
+  { INACTIVE, 0, DEFAULT_CH, 67      },  // Pin 34
+  { INACTIVE, 0, DEFAULT_CH, 68      },  // Pin 35
+  { INACTIVE, 0, DEFAULT_CH, 69      },  // Pin 36
+  { INACTIVE, 0, DEFAULT_CH, 70      },  // Pin 37
+  { INACTIVE, 0, DEFAULT_CH, 71      },  // Pin 38
+  { INACTIVE, 0, DEFAULT_CH, 72      },  // Pin 39
+  { INACTIVE, 0, DEFAULT_CH, 73      },  // Pin 40
+  { INACTIVE, 0, DEFAULT_CH, 74      },  // Pin 41
+  { INACTIVE, 0, DEFAULT_CH, 75      },  // Pin 42
+  { INACTIVE, 0, DEFAULT_CH, 76      },  // Pin 43
+  { INACTIVE, 0, DEFAULT_CH, 77      },  // Pin 44
+  { INACTIVE, 0, DEFAULT_CH, 78      },  // Pin 45
+  { INACTIVE, 0, DEFAULT_CH, 79      },  // Pin 46
+  { INACTIVE, 0, DEFAULT_CH, 80      },  // Pin 47
+  { INACTIVE, 0, DEFAULT_CH, 81      },  // Pin 48
+  { INACTIVE, 0, DEFAULT_CH, 82      },  // Pin 49
+  { INACTIVE, 0, DEFAULT_CH, 83      },  // Pin 50
+  { INACTIVE, 0, DEFAULT_CH, 84      },  // Pin 51
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 52
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 53
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 54 (A0)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 55 (A1)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 56 (A2)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 57 (A3)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 58 (A4)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 59 (A5)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 60 (A6)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 61 (A7)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 62 (A8)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 63 (A9)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 64 (A10)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 65 (A11)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 66 (A12)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 67 (A13)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 68 (A14)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 69 (A15)
+#else
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 0 (RX0, reserved)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 1 (TX0, reserved)
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 2
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 3
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 4
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 5
@@ -90,6 +162,7 @@ SENSOR_STATE s_sensorStates[NUM_PIN] = {
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 67 (A13)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 68 (A14)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 69 (A15)
+#endif
 };
 
 void setup() {
