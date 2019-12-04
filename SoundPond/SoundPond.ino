@@ -1,6 +1,10 @@
+///////////////////////////////////////////////////////////////
+// Main Boards for Sound Pond (Sketch for Arduino Mega 2560) //
+///////////////////////////////////////////////////////////////
+
 #define SERIAL_SPEED        (31250)
 //#define SERIAL_SPEED        (38400)
-//#define USE_DISTANCE_SENSOR
+#define USE_DISTANCE_SENSOR
 
 #define NOTE_ON_VELOCITY    (100)
 #define DEFAULT_CH          (0)     // default MIDI channel
@@ -77,7 +81,7 @@ SENSOR_STATE s_sensorStates[NUM_PIN] = {
   { INACTIVE, 0, DEFAULT_CH, 81      },  // Pin 48
   { INACTIVE, 0, DEFAULT_CH, 82      },  // Pin 49
   { INACTIVE, 0, DEFAULT_CH, 83      },  // Pin 50
-  { INACTIVE, 0, DEFAULT_CH, 84      },  // Pin 51
+  { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 51
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 52 (Distance Sensor Trig, reserved)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 53 (Distance Sensor Echo, reserved)
   { INACTIVE, 0, DEFAULT_CH, INVALID },  // Pin 54 (A0)
@@ -261,8 +265,8 @@ void sendMIDINoteOff(byte midiCh, byte noteNumber) {
 }
 
 void sendMIDIConstolChange(byte midiCh, byte value) {
-  Serial.write(0xB0 | midiCh);
-  Serial.write(1 /* Modulation */);
-  Serial.write(value);
+  Serial.write(0xE0 | midiCh);
+  Serial.write(0x00);
+  Serial.write((value >> 1) + 0x40);
   Serial.flush();
 }
